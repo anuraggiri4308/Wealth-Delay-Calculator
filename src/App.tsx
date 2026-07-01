@@ -127,7 +127,7 @@ export default function App() {
             transition={{ delay: 0.05 }}
             className="mt-4 font-display text-4xl font-semibold tracking-tight sm:text-6xl"
           >
-            Delay Calculator
+            Wealth Delay Calculator
           </motion.h1>
           <motion.p
             initial="hidden"
