@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-paper: #fbfaf8;
+  --color-ink: #0e1116;
+  --color-ink-soft: #4a4f5a;
+  --color-line: #e7e5e0;
+
+  --color-mint-500: #0fae6b;
+  --color-mint-600: #0a8f57;
+  --color-teal-500: #0e9488;
+
+  --color-coral-500: #e5484d;
+  --color-coral-600: #c2293a;
+  --color-ember-500: #f2790f;
+
+  --color-violet-500: #6d5bd0;
+  --color-indigo-500: #3a4ed6;
+
+  --color-gold-400: #d4af37;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display { font-family: var(--font-display); }
+
+.font-mono-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.card-grad-neutral {
+  background: linear-gradient(150deg, #ffffff 0%, #f3f1ea 55%, #ece8f7 100%);
+  border: 1px solid #eae7e0;
+}
+.card-grad-today {
+  background: linear-gradient(155deg, #0a8f57 0%, #0fae6b 45%, #0e9488 100%);
+}
+.card-grad-later {
+  background: linear-gradient(155deg, #9c1f2e 0%, #c2293a 45%, #e5484d 100%);
+}
+.card-grad-loss {
+  background: linear-gradient(160deg, #1a0e10 0%, #5c1420 35%, #c2293a 75%, #f2790f 100%);
+}
+.card-grad-hero {
+  background: linear-gradient(160deg, #14133a 0%, #2c2470 45%, #6d5bd0 100%);
+}
+.card-grad-insight {
+  background: linear-gradient(150deg, #fff8e8 0%, #fdeecb 60%, #f6e2c4 100%);
+  border: 1px solid #f0dca9;
+}
+
+.bg-grain {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+
+::selection { background: var(--color-mint-500); color: white; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
