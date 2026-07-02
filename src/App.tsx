@@ -83,15 +83,15 @@ export default function App() {
       const delayPeriods = result.todayPeriods - result.laterPeriods;
 
       const laterPeriods = Math.max(periods - delayPeriods, 0);
-      const fvAt = (p: number) => {
-        return futureValue(
-          amount,
-          ratePerPeriod,
-          p,
-          frequency === "monthly" ? 12 : 1,
-          stepUp
-        );
-      };
+      // const fvAt = (p: number) => {
+      //   return futureValue(
+      //     amount,
+      //     ratePerPeriod,
+      //     p,
+      //     frequency === "monthly" ? 12 : 1,
+      //     stepUp
+      //   );
+      // };
       data.push({
         year: Math.round((result.durationYears * i) / points),
         today: Math.round(
