@@ -219,7 +219,7 @@ export default function App() {
             <p className="text-sm font-medium uppercase tracking-wide text-white/70">
               If you start today
             </p>
-            <div className="mt-3 font-mono-num text-4xl font-semibold sm:text-6xl">
+            <div className="mt-3 font-mono-num font-bold text-[clamp(1.8rem,6vw,4rem)] leading-none">
               <AnimatedNumber value={result.todayFV} />
             </div>
             <div className="mt-8 grid grid-cols-1 gap-6 border-t border-white/20 pt-6 sm:grid-cols-3">
@@ -281,7 +281,7 @@ export default function App() {
             <p className="text-sm font-medium uppercase tracking-wide text-white/70">
               If you delay by {delayLabel}
             </p>
-            <div className="mt-3 font-mono-num text-4xl font-semibold sm:text-6xl">
+            <div className="mt-3 font-mono-num font-bold text-[clamp(1.8rem,6vw,4rem)] leading-none">
               <AnimatedNumber value={result.laterFV} />
             </div>
             <div className="mt-8 grid grid-cols-1 gap-6 border-t border-white/20 pt-6 sm:grid-cols-3">
@@ -314,7 +314,7 @@ export default function App() {
             <p className="text-sm font-medium uppercase tracking-wide text-white/60">
               Cost of Waiting
             </p>
-            <div className="mt-4 font-mono-num text-5xl font-bold sm:text-7xl">
+            <div className="mt-3 font-mono-num font-bold text-[clamp(1.8rem,6vw,4rem)] leading-none">
               <AnimatedNumber value={result.wealthLost} />
             </div>
             <p className="mx-auto mt-5 max-w-md text-white/70">
