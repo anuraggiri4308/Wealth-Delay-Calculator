@@ -660,7 +660,7 @@ function AmountInput({
   setInputValue: (v: string) => void;
   onChange: (v: number) => void;
 }) {
-  const step = 1000;
+  const step = 500;
   return (
     <div className="space-y-3">
       <div className="relative">
@@ -669,7 +669,7 @@ function AmountInput({
         </span>
         <input
           type="number"
-          min={500}
+          min={1000}
           step={step}
           value={inputValue}
           onChange={(e) => {
@@ -711,7 +711,7 @@ function AmountInput({
         </button>
         <input
           type="range"
-          min={500}
+          min={1000}
           max={500000}
           step={step}
           value={value}
