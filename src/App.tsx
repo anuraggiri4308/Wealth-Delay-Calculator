@@ -15,6 +15,7 @@ import {
   buildInsight,
   type Frequency,
   type DelayUnit,
+  futureValue,
 } from "./lib/calc";
 import AnimatedNumber from "./components/AnimatedNumber";
 
@@ -31,6 +32,7 @@ export default function App() {
   const [amountInput, setAmountInput] = useState("20000");
   const [investUntilAge, setInvestUntilAge] = useState(60);
   const [annualReturn, setAnnualReturn] = useState(12);
+  const [stepUp, setStepUp] = useState(0);
   const [delayValue, setDelayValue] = useState(1);
   const [delayUnit, setDelayUnit] = useState<DelayUnit>("years");
   const [lossView, setLossView] = useState<"monthly" | "yearly">("yearly");
@@ -42,6 +44,7 @@ export default function App() {
     amount,
     investUntilAge,
     annualReturn,
+    stepUp,
     delayValue,
     delayUnit,
   };
@@ -53,6 +56,7 @@ export default function App() {
       amount,
       investUntilAge,
       annualReturn,
+      stepUp,
       delayValue,
       delayUnit,
     ]
@@ -66,32 +70,47 @@ export default function App() {
       : annualReturn / 100;
 
   const chartData = useMemo(() => {
+    const periodsPerYear = frequency === "monthly" ? 12 : 1;
     const points = 12;
     const totalPeriods = Math.max(result.todayPeriods, 1);
     const data = [];
     for (let i = 0; i <= points; i++) {
       const periods = Math.round((totalPeriods * i) / points);
-      const laterPeriods = Math.max(
-        periods - (result.todayPeriods - result.laterPeriods),
-        0
-      );
+      // const laterPeriods = Math.max(
+      //   periods - (result.todayPeriods - result.laterPeriods),
+      //   0
+      // );
+      const delayPeriods = result.todayPeriods - result.laterPeriods;
+
+      const laterPeriods = Math.max(periods - delayPeriods, 0);
       const fvAt = (p: number) => {
-        if (p <= 0) return 0;
-        if (ratePerPeriod === 0) return amount * p;
-        return (
-          amount *
-          ((Math.pow(1 + ratePerPeriod, p) - 1) / ratePerPeriod) *
-          (1 + ratePerPeriod)
+        return futureValue(
+          amount,
+          ratePerPeriod,
+          p,
+          frequency === "monthly" ? 12 : 1,
+          stepUp
         );
       };
       data.push({
         year: Math.round((result.durationYears * i) / points),
-        today: Math.round(fvAt(periods)),
-        later: Math.round(fvAt(laterPeriods)),
+        today: Math.round(
+          futureValue(amount, ratePerPeriod, periods, periodsPerYear, stepUp)
+        ),
+
+        later: Math.round(
+          futureValue(
+            amount,
+            ratePerPeriod,
+            laterPeriods,
+            periodsPerYear,
+            stepUp
+          )
+        ),
       });
     }
     return data;
-  }, [result, ratePerPeriod, amount]);
+  }, [result, ratePerPeriod, amount, stepUp]);
 
   const handleCalculateAgain = () => {
     topRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -170,6 +189,25 @@ export default function App() {
                 suffix=" yrs"
                 onChange={setInvestUntilAge}
               />
+
+              <SliderField
+                label="Expected Annual Return"
+                value={annualReturn}
+                min={1}
+                max={30}
+                step={0.5}
+                suffix="%"
+                onChange={setAnnualReturn}
+              />
+              <SliderField
+                label="Yearly Step-Up"
+                value={stepUp}
+                min={0}
+                max={30}
+                step={1}
+                suffix="%"
+                onChange={setStepUp}
+              />
               <div>
                 <FieldLabel>Investment Frequency</FieldLabel>
                 <Toggle
@@ -181,15 +219,6 @@ export default function App() {
                   onChange={(v) => setFrequency(v as Frequency)}
                 />
               </div>
-              <SliderField
-                label="Expected Annual Return"
-                value={annualReturn}
-                min={1}
-                max={30}
-                step={0.5}
-                suffix="%"
-                onChange={setAnnualReturn}
-              />
               <div className="sm:col-span-2">
                 <FieldLabel>
                   Investment Amount (

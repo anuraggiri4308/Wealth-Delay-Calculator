@@ -7,6 +7,7 @@ export interface CalcInputs {
   amount: number;
   investUntilAge: number;
   annualReturn: number;
+  stepUp: number;
   delayValue: number;
   delayUnit: DelayUnit;
 }
@@ -15,7 +16,7 @@ export interface CalcResult {
   todayFV: number;
   todayInvested: number;
   todayReturns: number;
-  todayPeriods: number; // in chosen frequency units
+  todayPeriods: number;
   laterFV: number;
   laterInvested: number;
   laterReturns: number;
@@ -28,18 +29,41 @@ export interface CalcResult {
 }
 
 // Future value of a SIP / yearly investment with compounding, annuity-due style
-function futureValue(amount: number, ratePerPeriod: number, periods: number): number {
+export function futureValue(
+  amount: number,
+  ratePerPeriod: number,
+  periods: number,
+  periodsPerYear: number,
+  stepUp: number
+) {
   if (periods <= 0 || amount <= 0) return 0;
-  if (ratePerPeriod === 0) return amount * periods;
-  const fv =
-    amount *
-    ((Math.pow(1 + ratePerPeriod, periods) - 1) / ratePerPeriod) *
-    (1 + ratePerPeriod);
+
+  let fv = 0;
+
+  for (let i = 0; i < periods; i++) {
+    const yearsPassed = Math.floor(i / periodsPerYear);
+
+    const investment = amount * Math.pow(1 + stepUp / 100, yearsPassed);
+
+    const remaining = periods - i;
+
+    fv += investment * Math.pow(1 + ratePerPeriod, remaining);
+  }
+
   return fv;
 }
 
 export function calculate(inputs: CalcInputs): CalcResult {
-  const { currentAge, frequency, amount, investUntilAge, annualReturn, delayValue, delayUnit } = inputs;
+  const {
+    currentAge,
+    frequency,
+    amount,
+    investUntilAge,
+    annualReturn,
+    delayValue,
+    delayUnit,
+    stepUp,
+  } = inputs;
 
   const totalYears = Math.max(investUntilAge - currentAge, 0);
   const periodsPerYear = frequency === "monthly" ? 12 : 1;
@@ -63,11 +87,51 @@ export function calculate(inputs: CalcInputs): CalcResult {
 
   const laterPeriods = Math.max(todayPeriods - delayInPeriods, 0);
 
-  const todayFV = futureValue(amount, ratePerPeriod, todayPeriods);
-  const laterFV = futureValue(amount, ratePerPeriod, laterPeriods);
+  const todayFV = futureValue(
+    amount,
+    ratePerPeriod,
+    todayPeriods,
+    periodsPerYear,
+    stepUp
+  );
 
-  const todayInvested = amount * todayPeriods;
-  const laterInvested = amount * laterPeriods;
+  const laterFV = futureValue(
+    amount,
+    ratePerPeriod,
+    laterPeriods,
+    periodsPerYear,
+    stepUp
+  );
+
+  function totalInvestment(
+    amount: number,
+    periods: number,
+    periodsPerYear: number,
+    stepUp: number
+  ) {
+    let total = 0;
+
+    for (let i = 0; i < periods; i++) {
+      const yearsPassed = Math.floor(i / periodsPerYear);
+
+      total += amount * Math.pow(1 + stepUp / 100, yearsPassed);
+    }
+
+    return total;
+  }
+  const todayInvested = totalInvestment(
+    amount,
+    todayPeriods,
+    periodsPerYear,
+    stepUp
+  );
+
+  const laterInvested = totalInvestment(
+    amount,
+    laterPeriods,
+    periodsPerYear,
+    stepUp
+  );
 
   const todayReturns = todayFV - todayInvested;
   const laterReturns = laterFV - laterInvested;
@@ -75,7 +139,8 @@ export function calculate(inputs: CalcInputs): CalcResult {
   const wealthLost = Math.max(todayFV - laterFV, 0);
   const wealthLostPct = todayFV > 0 ? (wealthLost / todayFV) * 100 : 0;
 
-  const wealthLostPerMonth = totalYears > 0 ? wealthLost / (totalYears * 12) : 0;
+  const wealthLostPerMonth =
+    totalYears > 0 ? wealthLost / (totalYears * 12) : 0;
   const wealthLostPerYear = totalYears > 0 ? wealthLost / totalYears : 0;
 
   return {
@@ -111,7 +176,15 @@ export function formatINR(value: number, compact = false): string {
 }
 
 export function buildInsight(inputs: CalcInputs, result: CalcResult): string {
-  const delayLabel = `${inputs.delayValue} ${inputs.delayUnit === "months" ? (inputs.delayValue === 1 ? "month" : "months") : inputs.delayValue === 1 ? "year" : "years"}`;
+  const delayLabel = `${inputs.delayValue} ${
+    inputs.delayUnit === "months"
+      ? inputs.delayValue === 1
+        ? "month"
+        : "months"
+      : inputs.delayValue === 1
+      ? "year"
+      : "years"
+  }`;
   const lostCompact = formatINR(result.wealthLost, true);
   if (result.wealthLost <= 0) {
     return "Start investing today — every period you wait is a period your money doesn't get to compound.";
