@@ -146,7 +146,7 @@ export default function App() {
             transition={{ delay: 0.05 }}
             className="mt-4 font-display text-4xl font-semibold tracking-tight sm:text-6xl"
           >
-            Wealth Delay Calculator
+            Wealth Projection Calculator
           </motion.h1>
           <motion.p
             initial="hidden"
@@ -155,7 +155,8 @@ export default function App() {
             transition={{ delay: 0.1 }}
             className="mt-4 max-w-xl text-lg text-ink-soft"
           >
-            See how much delaying your investments could cost your future.
+            Plan your investments, visualize your future wealth, and see how
+            small changes today can make a big difference tomorrow.
           </motion.p>
         </div>
       </header>
