@@ -137,7 +137,7 @@ export default function App() {
             className="flex items-center gap-2 text-sm font-medium text-ink-soft"
           >
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-mint-500" />
-            @anuraggirispeaks
+            @Fintechanurag
           </motion.div>
           <motion.h1
             initial="hidden"
@@ -585,12 +585,12 @@ export default function App() {
               <p>
                 Copyright © 2026 Anurag Giri |{" "}
                 <a
-                  href="https://www.instagram.com/anuraggirispeaks"
+                  href="https://www.instagram.com/fintechanurag"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-ink underline decoration-mint-500 decoration-2 underline-offset-2 hover:text-mint-600"
                 >
-                  @anuraggirispeaks
+                  @FintechAnurag
                 </a>{" "}
                 | All rights reserved.
               </p>
